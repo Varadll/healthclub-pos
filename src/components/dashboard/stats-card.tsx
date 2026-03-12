@@ -1,53 +1,31 @@
 interface StatsCardProps {
   label: string;
   value: string | number;
-  icon: React.ReactNode;
-  trend?: {
-    value: string;
-    positive: boolean;
-  };
-  accentColor?: "gold" | "success" | "danger" | "warning";
+  icon: string;
+  trend?: { value: string; positive: boolean };
+  subtitle?: string;
 }
 
-export function StatsCard({
-  label,
-  value,
-  icon,
-  trend,
-  accentColor = "gold",
-}: StatsCardProps) {
-  const accentMap = {
-    gold: "bg-gold/10 text-gold",
-    success: "bg-success-bg text-success",
-    danger: "bg-danger-bg text-danger",
-    warning: "bg-warning-bg text-warning",
-  };
-
-  const trendColorMap = {
-    true: "text-success",
-    false: "text-danger",
-  };
-
+export default function StatsCard({ label, value, icon, trend, subtitle }: StatsCardProps) {
   return (
-    <div className="bg-surface-raised border border-border rounded-md p-6 hover:shadow-md transition-shadow duration-200">
+    <div className="rounded-2xl border border-white/[0.06] bg-charcoal/40 backdrop-blur-sm p-6 transition-all duration-200 hover:border-gold/20 hover:shadow-[0_0_30px_-10px_rgba(201,168,76,0.08)]">
       <div className="flex items-start justify-between mb-4">
-        <div
-          className={`w-11 h-11 rounded-md flex items-center justify-center ${accentMap[accentColor]}`}
-        >
-          {icon}
-        </div>
-        {trend && (
-          <span
-            className={`text-xs font-medium font-body ${
-              trendColorMap[String(trend.positive) as "true" | "false"]
-            }`}
-          >
-            {trend.positive ? "↑" : "↓"} {trend.value}
-          </span>
-        )}
+        <span className="text-[12px] font-body text-white/40 uppercase tracking-[0.12em]">
+          {label}
+        </span>
+        <span className="text-lg opacity-40">{icon}</span>
       </div>
-      <p className="font-display text-3xl text-charcoal stat-number">{value}</p>
-      <p className="font-body text-sm text-charcoal/50 mt-1">{label}</p>
+      <p className="text-[32px] font-heading font-semibold text-white leading-none mb-1">
+        {value}
+      </p>
+      {trend && (
+        <span className={`text-[12px] font-medium ${trend.positive ? 'text-health-green' : 'text-health-red'}`}>
+          {trend.positive ? '↑' : '↓'} {trend.value}
+        </span>
+      )}
+      {subtitle && !trend && (
+        <span className="text-[12px] text-white/30">{subtitle}</span>
+      )}
     </div>
   );
 }

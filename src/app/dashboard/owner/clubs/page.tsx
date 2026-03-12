@@ -1,51 +1,52 @@
-"use client";
+'use client';
 
-import { useEffect, useState } from "react";
-import { ClubSummaryCard } from "@/components/dashboard/club-summary-card";
-import { ClubCardSkeleton } from "@/components/ui/skeleton";
+import { useEffect, useState } from 'react';
+import ClubSummaryCard from '@/components/dashboard/club-summary-card';
+import { ClubCardSkeleton } from '@/components/ui/skeleton';
 
-interface ClubWithStats {
+interface Club {
   id: string;
   name: string;
-  address: string | null;
-  logo_url: string | null;
-  trainer_count: number;
-  customer_count: number;
-  active_membership_count: number;
+  address: string;
+  logoUrl: string | null;
+  trainerCount: number;
+  customerCount: number;
+  activeMembershipCount: number;
 }
 
-export default function ClubsPage() {
-  const [clubs, setClubs] = useState<ClubWithStats[]>([]);
+export default function AllClubsPage() {
+  const [clubs, setClubs] = useState<Club[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchClubs = async () => {
+    async function fetchClubs() {
       try {
-        const res = await fetch("/api/clubs");
-        if (res.ok) {
-          const data = await res.json();
-          setClubs(data.clubs);
-        }
-      } catch (error) {
-        console.error("Error fetching clubs:", error);
+        const res = await fetch('/api/clubs');
+        const data = await res.json();
+        setClubs(data);
+      } catch (err) {
+        console.error('Failed to fetch clubs:', err);
       } finally {
         setLoading(false);
       }
-    };
-
+    }
     fetchClubs();
   }, []);
 
   return (
-    <div className="p-6 lg:p-10 page-enter">
-      <div className="mb-10">
-        <h1 className="font-display text-4xl text-charcoal">All Clubs</h1>
-        <p className="font-body text-base text-charcoal/50 mt-1">
-          Manage and view all your Herbalife nutrition clubs
+    <div className="space-y-6">
+      {/* Header */}
+      <div>
+        <h1 className="text-[28px] font-heading font-semibold text-white">
+          All Clubs
+        </h1>
+        <p className="text-[14px] text-white/40 mt-1 font-body">
+          {clubs.length} location{clubs.length !== 1 ? 's' : ''} across Cork
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
+      {/* Club Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
         {loading ? (
           <>
             <ClubCardSkeleton />
@@ -61,10 +62,10 @@ export default function ClubsPage() {
               id={club.id}
               name={club.name}
               address={club.address}
-              logoUrl={club.logo_url}
-              trainerCount={club.trainer_count}
-              customerCount={club.customer_count}
-              activeMembershipCount={club.active_membership_count}
+              logoUrl={club.logoUrl}
+              trainerCount={club.trainerCount}
+              customerCount={club.customerCount}
+              activeMembershipCount={club.activeMembershipCount}
             />
           ))
         )}
